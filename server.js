@@ -1,7 +1,10 @@
 const http = require('http');
 const app = require('./app');
-const port = process.env.PORT || 8080;
+// require('dotenv').config();
 
+
+// Initializing the server & listening on a port
+const port = process.env.PORT;
 const server = http.createServer(app);
 
 

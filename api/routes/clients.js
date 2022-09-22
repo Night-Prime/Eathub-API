@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router(); // intializing the current route with an express middleware
 
 // GET Request
 router.get('/', (req, res, next) => {
@@ -10,8 +10,13 @@ router.get('/', (req, res, next) => {
 
 // POST Request
 router.post('/', (req, res, next) => {
+    const client = {
+        clientName: req.body.clientName,
+        product: req.body.product
+    }
     res.status(201).json({
-        message: 'Handling clients POST requests'
+        message: 'Handling clients POST requests',
+        client: client
     });
 });
 
