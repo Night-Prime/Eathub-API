@@ -24,6 +24,7 @@ mongoose.connect(DB_KEY, {
 // middleware functions
 const app = express();
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // parsing a JSON response
 

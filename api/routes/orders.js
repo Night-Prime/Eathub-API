@@ -9,6 +9,7 @@ const Product = require('../models/product');
 router.get('/', (req, res, next) => {
     Order.find()
     .select('product quantity _id delivered cancelled')
+    .populate('product') // sending queries to filter by product
     .exec()
     .then(docs => {
         res.status(200).json({
@@ -76,26 +77,69 @@ router.post('/', (req, res, next) => {
 
 // single-order GET request
 router.get('/:orderId', (req, res, next) => {
-    res.status(200).json({
-        messge: 'Sucessfully grabbed a single order',
-        orderId: req.params.orderId
+    Order.findById(req.params.orderId)
+    .exec()
+    .then(order => {
+        if(!order){
+            return res.status(404).json({message: 'Order not found!'})
+        }
+        res.status(200).json({
+            order: order,
+            request: {
+                type: 'GET',
+                url: `http://localhost:${process.env.PORT}/orders/` + order._id
+            }
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
     });
-
 });
 
 // single-order PATCH request
 router.patch('/:orderId', (req, res, next) => {
-    res.status(200).json({
-        messge: 'Sucessfully updated this order',
-        orderId: req.params.orderId
-    });
+    const id = req.params.orderId;
+    const updateOps = {};
+    for(const ops of req.body){
+        updateOps[ops.propName] = ops.value;
+    }
+    Order.updateOne({_id: id}, {$set: updateOps})
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            message: 'Product has been updated successfully',
+            order: result,
+            _id: result._id,
+            quantity: result.quantity,
+            request: {
+                type: 'PATCH',
+                url: 'https://localhost:${process.env.PORT}/' + result._id
+            }
+        })
+    })
 });
  
 // single-order DELETE request
 router.delete('/:orderId', (req, res, next) => {
-    res.status(200).json({
-        messge: 'Sucessfully Deleted this  order',
-        orderId: req.params.orderId
+    Order.remove({ _id: req.params.orderId})
+    .exec()
+    .then(order => {
+        res.status(200).json({
+            order: order,
+            request: {
+                message: 'Order removed successfully',
+                type: 'DELETE',
+                url: `http://localhost:${process.env.PORT}/orders/` + order._id,
+                body: {productId: 'ID', quantity:"Number"}
+            }
+        });
+    })
+    .catch( err => {
+        res.status(500).json({
+            error: err
+        })
     });
 });
 
