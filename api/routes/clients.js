@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router(); // intializing the current route with an express middleware
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken'); // generating web tokens
 
-const Client = require('../models/client');
 
 /* Controller */
 const ClientController = require('../controllers/clients')
