@@ -2,6 +2,7 @@ const http = require('http');
 const app = require('./app');
 // require('dotenv').config();
 
+require('dotenv').config();
 
 // Initializing the server & listening on a port
 const port = process.env.PORT;
